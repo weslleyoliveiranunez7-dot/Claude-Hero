@@ -1,0 +1,19 @@
+.home{display:flex;flex-direction:column;gap:12px}
+.hero{display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:4px}
+.hero .logo{font-size:clamp(2.4rem,13vw,3.8rem)}
+.hero .tag{color:var(--muted);font-size:.85rem;letter-spacing:3px;text-transform:uppercase}
+.hero .mascot{width:clamp(90px,26vw,130px);animation:bob 1.6s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-8px) rotate(-2deg)}}
+.player{display:flex;gap:10px;align-items:center;justify-content:center;font-size:.85rem;color:var(--muted)}
+.player b{color:var(--orange2)}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.menu-item{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;min-height:76px;padding:12px 14px;border-radius:var(--radius);
+  background:linear-gradient(135deg,#2e1d5acc,#1a1033cc);border:1px solid var(--line);color:var(--txt);text-align:left;cursor:pointer;overflow:hidden;font:inherit}
+.menu-item::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c,var(--orange))}
+.menu-item:active{transform:scale(.97);border-color:var(--orange)}
+.menu-item .ic{font-size:1.5rem;line-height:1}
+.menu-item .tt{font-weight:800;font-size:.98rem}
+.menu-item .sub{font-size:.72rem;color:var(--muted)}
+.menu-item.main{grid-column:1/-1;min-height:92px;background:linear-gradient(135deg,#ff7a1a,#c4400a);border-color:#ffb347}
+.menu-item.main .sub{color:#ffe2c4}
+.menu-item .lock{position:absolute;right:10px;top:8px;font-size:.62rem;background:#0006;border-radius:8px;padding:2px 7px;color:#ffd9b0}
