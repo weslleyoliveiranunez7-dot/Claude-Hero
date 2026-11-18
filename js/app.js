@@ -3,11 +3,13 @@ import { get } from './storage.js';
 import { renderSettings } from './settings.js';
 import { mascotSVG } from './mascot.js';
 import { initBackground } from './background.js';
+import { selectScreen, resultScreen } from './play-screens.js';
+import { playScreen } from './gameplay.js';
 
 // Itens do menu. "etapa" = em qual etapa do plano a função fica pronta.
 const MENU = [
   { id: 'historia',  ic: '📖', tt: 'Modo História',    sub: 'Derrote o SILÊNCIO',       c: '#ff3d4d', etapa: 6 },
-  { id: 'jogar',     ic: '🎸', tt: 'Jogar uma música', sub: 'Escolha e toque',          c: '#2ee66b', etapa: 2, main: true },
+  { id: 'jogar',     ic: '🎸', tt: 'Jogar uma música', sub: 'Escolha e toque',          c: '#2ee66b', etapa: 0, main: true },
   { id: 'biblioteca',ic: '📚', tt: 'Minha biblioteca', sub: 'Suas músicas salvas',      c: '#3d8bff', etapa: 3 },
   { id: 'importar',  ic: '📥', tt: 'Importar MP3',     sub: 'Gere fases da sua música', c: '#ffd93d', etapa: 3 },
   { id: 'criar',     ic: '✨', tt: 'Criar música',     sub: 'Monte um mapa do zero',    c: '#ff9a2e', etapa: 4 },
@@ -66,6 +68,10 @@ register('home', home);
 for (const m of MENU) {
   register(m.id, el => shell(el, m.tt, m.id === 'stats' ? stats : m.id === 'config' ? (b => renderSettings(b)) : soon(m)));
 }
+
+register('jogar', selectScreen);
+register('play', playScreen);
+register('resultado', resultScreen);
 
 initBackground();
 start();
