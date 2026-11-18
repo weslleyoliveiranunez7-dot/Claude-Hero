@@ -1,0 +1,8 @@
+@media (max-width:360px){.menu-item .tt{font-size:.88rem}.menu-item{min-height:68px;padding:10px}}
+@media (orientation:landscape) and (max-height:480px){
+  .hero{flex-direction:row;justify-content:center;gap:16px}
+  .hero .mascot{width:70px}
+  .menu-grid{grid-template-columns:repeat(4,1fr)}
+  .menu-item.main{grid-column:span 2}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
