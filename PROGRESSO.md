@@ -22,9 +22,17 @@ Identidade: mascote laranja pixel-art com guitarra (referência em Referência.z
 - css/game.css; sw.js VERSION=ch-v2; app.js registra rotas jogar/play/resultado
 - Testado em Chromium headless com jogador automático (151/151 notas, 100%, recorde salvo). Ainda NÃO testado em Android real (ajustar latência se precisar)
 
+## Feito (Etapa 3 ✅)
+- js/db.js: IndexedDB (stores "songs" = metadados+mapas, "audio" = arquivo original); js/mp3-analyzer.js: decodifica MP3/M4A/WAV/OGG, FFT 512/hop 256 em áudio decimado, fluxo espectral em 3 faixas + energia + centroide, em partes com barra de progresso; erros tratados (arquivo inválido, <10s, >12min, >60MB, silêncio, sem espaço)
+- js/beat-detector.js: picos de fluxo, BPM (autocorrelação + grade de pente), fase e confiança (alta/média/baixa)
+- js/note-generator.js: 4 dificuldades (gap mínimo, % de picos, 3/4/5 pistas pelo centroide, grade do BPM se confiança>=35%, notas longas por energia sustentada, acordes no Expert)
+- js/library.js: telas Importar MP3 (revisão: nome, BPM, confiança, nº de notas; salvar/salvar e jogar/descartar) e Minha biblioteca (dificuldade, jogar, apagar, recordes)
+- audio-engine.startTrack (toca AudioBuffer com o mesmo relógio); gameplay carrega música importada ("u-...") do IndexedDB; "Jogar" também lista as importadas; recordes por música+dificuldade; sw.js VERSION=ch-v3
+- Testado em Chromium headless: WAV/MP3 sintético 120 BPM => BPM 120, fase 0,29s (real 0,30), notas alinhadas à grade (erro <10ms), jogador automático 105/105 no Médio, arquivo falso => mensagem de erro. NÃO testado com música real nem em Android
+
 ## Falta
-- Etapa 3: mp3-analyzer.js, beat-detector.js, note-generator.js (transientes, BPM, espectro, confiança, dificuldades), IndexedDB, biblioteca, recordes por música importada
-- Etapas 4 a 8 conforme plano
+- Etapa 4: editor de mapas (criar música do zero, editor de notas) sobre os mapas salvos no IndexedDB
+- Etapas 5 a 8 conforme plano
 
 ## Convenções
 Ao entregar: zip só com arquivos novos/modificados; pastas de upload com menos de 100 arquivos (parte-1, parte-2…).
