@@ -14,9 +14,16 @@ Identidade: mascote laranja pixel-art com guitarra (referência em Referência.z
 - Telas reais: Menu, Estatísticas, Configurações. Demais itens mostram "Chega na Etapa N" (honesto, sem simulação)
 - Sintaxe dos JS verificada com node; ainda NÃO testado em navegador real
 
+## Feito (Etapa 2 ✅)
+- js/songs.js: 3 músicas de demonstração ORIGINAIS geradas por código (Amanhecer Elétrico, Estrada de Neon, Silêncio Quebrado) + gerador de mapas por dificuldade (Fácil 3 pistas, Médio 4, Difícil 5, Expert 5 com acordes; notas longas)
+- js/audio-engine.js: Web Audio (bateria, baixo, guitarra base e solo sintetizados), relógio = audioContext.currentTime, pausa via suspend/resume, guitarra "abafa" ao errar
+- js/gameplay.js: canvas 5 pistas em perspectiva, notas longas/acordes, combo, multiplicador (até x4), energia, Perfeito(50ms)/Ótimo(95ms)/Bom(150ms)/Perdeu, toque fora de hora penaliza, pausa, toque multitouch + teclado (A S D F G), latência de Configurações (positivo = som chega atrasado)
+- js/play-screens.js: seleção de música/dificuldade com recordes e tela de resultados (estrelas, precisão, XP, moedas); progresso e recordes salvos em storage.js
+- css/game.css; sw.js VERSION=ch-v2; app.js registra rotas jogar/play/resultado
+- Testado em Chromium headless com jogador automático (151/151 notas, 100%, recorde salvo). Ainda NÃO testado em Android real (ajustar latência se precisar)
+
 ## Falta
-- Etapa 2: audio-engine.js, gameplay.js (canvas 5 pistas em perspectiva, notas longas/acordes, combo, multiplicador, energia, Perfect/Great/Good/Miss, pausa, toque+teclado, sync pelo audioContext.currentTime, latência), seleção de música com músicas de demonstração originais
-- Etapa 3: mp3-analyzer.js, beat-detector.js, note-generator.js (transientes, BPM, espectro, confiança, dificuldades), IndexedDB, tela de resultados, recordes
+- Etapa 3: mp3-analyzer.js, beat-detector.js, note-generator.js (transientes, BPM, espectro, confiança, dificuldades), IndexedDB, biblioteca, recordes por música importada
 - Etapas 4 a 8 conforme plano
 
 ## Convenções

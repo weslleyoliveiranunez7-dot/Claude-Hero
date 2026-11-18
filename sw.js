@@ -1,9 +1,10 @@
 // Service worker: cache do app (offline). Mude VERSION a cada atualização.
-const VERSION = 'ch-v1';
+const VERSION = 'ch-v2';
 const FILES = [
   './', './index.html', './manifest.json',
-  './css/style.css', './css/menu.css', './css/mobile.css',
+  './css/style.css', './css/menu.css', './css/game.css', './css/mobile.css',
   './js/app.js', './js/router.js', './js/storage.js', './js/settings.js', './js/mascot.js', './js/background.js',
+  './js/songs.js', './js/audio-engine.js', './js/gameplay.js', './js/play-screens.js',
   './assets/icons/icon-192.png', './assets/icons/icon-512.png'
 ];
 self.addEventListener('install', e => {
