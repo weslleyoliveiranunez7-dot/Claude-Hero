@@ -15,3 +15,6 @@
 .result{text-align:center}
 .result .stars{font-size:1.8rem;margin:8px 0}
 .result .big{font-size:2.4rem;font-weight:900;color:var(--orange2)}
+.pbar{height:12px;border-radius:8px;background:#ffffff22;overflow:hidden;margin-top:10px}
+.pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--orange),var(--orange2));transition:width .2s}
+.txt{background:#1d1238;color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:10px;font-size:1rem;width:58%;font-family:inherit}
