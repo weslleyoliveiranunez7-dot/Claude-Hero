@@ -5,13 +5,14 @@ import { mascotSVG } from './mascot.js';
 import { initBackground } from './background.js';
 import { selectScreen, resultScreen } from './play-screens.js';
 import { playScreen } from './gameplay.js';
+import { importScreen, libraryScreen } from './library.js';
 
 // Itens do menu. "etapa" = em qual etapa do plano a função fica pronta.
 const MENU = [
   { id: 'historia',  ic: '📖', tt: 'Modo História',    sub: 'Derrote o SILÊNCIO',       c: '#ff3d4d', etapa: 6 },
   { id: 'jogar',     ic: '🎸', tt: 'Jogar uma música', sub: 'Escolha e toque',          c: '#2ee66b', etapa: 0, main: true },
-  { id: 'biblioteca',ic: '📚', tt: 'Minha biblioteca', sub: 'Suas músicas salvas',      c: '#3d8bff', etapa: 3 },
-  { id: 'importar',  ic: '📥', tt: 'Importar MP3',     sub: 'Gere fases da sua música', c: '#ffd93d', etapa: 3 },
+  { id: 'biblioteca',ic: '📚', tt: 'Minha biblioteca', sub: 'Suas músicas salvas',      c: '#3d8bff', etapa: 0 },
+  { id: 'importar',  ic: '📥', tt: 'Importar MP3',     sub: 'Gere fases da sua música', c: '#ffd93d', etapa: 0 },
   { id: 'criar',     ic: '✨', tt: 'Criar música',     sub: 'Monte um mapa do zero',    c: '#ff9a2e', etapa: 4 },
   { id: 'editor',    ic: '🎚️', tt: 'Editor de notas',  sub: 'Ajuste cada nota',         c: '#ff9a2e', etapa: 4 },
   { id: 'guitar',    ic: '📱', tt: 'CLAUDE GUITAR',    sub: 'Controle e afinador',      c: '#3d8bff', etapa: 5 },
@@ -72,6 +73,8 @@ for (const m of MENU) {
 register('jogar', selectScreen);
 register('play', playScreen);
 register('resultado', resultScreen);
+register('importar', importScreen);
+register('biblioteca', libraryScreen);
 
 initBackground();
 start();

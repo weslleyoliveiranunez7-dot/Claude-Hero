@@ -89,3 +89,23 @@ export function startSong(song, { volume = 0.8 } = {}) {
     }
   };
 }
+
+// Toca uma música importada (AudioBuffer) com a mesma interface de startSong.
+export function startTrack(buffer, { volume = 0.8 } = {}) {
+  const c = getCtx(), out = c.createGain(), tg = c.createGain(), src = c.createBufferSource();
+  out.gain.value = Math.max(0, Math.min(1, volume)); out.connect(master); tg.connect(out);
+  src.buffer = buffer; src.connect(tg);
+  const t0 = c.currentTime + LEAD_IN; src.start(t0);
+  let muted = false, stopped = false;
+  return {
+    t0, time: () => c.currentTime - t0,
+    mute(on) { if (on === muted) return; muted = on; tg.gain.setTargetAtTime(on ? 0.45 : 1, c.currentTime, 0.03); },
+    pause: () => c.suspend(), resume: () => c.resume(),
+    stop() {
+      if (stopped) return; stopped = true;
+      out.gain.setTargetAtTime(0, c.currentTime, 0.08);
+      setTimeout(() => { try { src.stop(); out.disconnect(); } catch (e) {} }, 700);
+      if (c.state === 'suspended') c.resume().catch(() => {});
+    }
+  };
+}

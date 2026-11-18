@@ -3,7 +3,8 @@
 import { get, save } from './storage.js';
 import { go, toast } from './router.js';
 import { SONGS, DIFFS, buildChart } from './songs.js';
-import { unlock, startSong, LEAD_IN } from './audio-engine.js';
+import { unlock, startSong, startTrack, getCtx, LEAD_IN } from './audio-engine.js';
+import { getSong, getAudio } from './db.js';
 
 export const session = { last: null };
 export const LANE_COLORS = ['#2ee66b', '#ff3d4d', '#ffd93d', '#3d8bff', '#ff9a2e'];
@@ -13,10 +14,11 @@ const NAMES = ['PERFEITO', 'ÓTIMO', 'BOM'], POPC = ['#ffe35a', '#6dffa0', '#8fb
 
 export function playScreen(app) {
   const q = new URLSearchParams(location.hash.split('?')[1] || '');
-  const song = SONGS.find(s => s.id === q.get('s'));
+  const sid = q.get('s') || '';
+  let song = SONGS.find(s => s.id === sid);
   let diff = q.get('d'); if (!DIFFS[diff]) diff = get().settings.difficulty;
-  if (!song) { go('jogar'); return null; }
-  const D = DIFFS[diff], settings = get().settings, beat = 60 / song.bpm;
+  if (!song && !sid.startsWith('u-')) { go('jogar'); return null; }
+  const D = DIFFS[diff], settings = get().settings; let beat = 0.5;
   const bg = document.getElementById('bg'); if (bg) bg.style.visibility = 'hidden';
   app.innerHTML = `<div class="game"><canvas id="gc"></canvas><button class="pause-btn" id="pz" aria-label="Pausar" hidden>❚❚</button><div class="ov" id="ov"></div></div>`;
   const cv = app.querySelector('#gc'), c2 = cv.getContext('2d'), ov = app.querySelector('#ov'), pz = app.querySelector('#pz');
@@ -35,10 +37,11 @@ export function playScreen(app) {
     mx = W / 2; hz = H * 0.14; hitY = H * 0.8; botW = Math.min(W * 0.98, 640); topW = botW * 0.27;
   }
   function reset() {
-    notes = buildChart(song, diff).map(n => ({ ...n, st: 0, hold: false, broken: false }));
+    notes = (song.charts ? song.charts[diff] : buildChart(song, diff)).map(n => ({ ...n, st: 0, hold: false, broken: false }));
     head = 0; vstart = 0; holds.length = 0; parts.length = 0; pop = null;
     S = { score: 0, combo: 0, max: 0, mult: 1, energy: 60, p: 0, g: 0, o: 0, hit: 0 };
-    endAt = Math.max(...notes.map(n => n.t + n.len)) + 2.5;
+    endAt = notes.length ? Math.max(...notes.map(n => n.t + n.len)) + 2.5 : 5;
+    if (song.duration) endAt = Math.min(endAt, song.duration + 0.5);
   }
   const say = (text, color) => { pop = { text, color, age: 0 }; };
   function burst(l) {
@@ -190,7 +193,7 @@ export function playScreen(app) {
   }
   async function start() {
     const b = ov.querySelector('#st'); b.disabled = true; b.textContent = 'Preparando palco…';
-    try { await unlock(); if (!alive) return; ctl = startSong(song, { volume: settings.volume }); }
+    try { await unlock(); if (!alive) return; ctl = song.buffer ? startTrack(song.buffer, { volume: settings.volume }) : startSong(song, { volume: settings.volume }); }
     catch (e) { toast('Erro de áudio: ' + (e.message || e), 4000); showReady(); return; }
     ov.hidden = true; pz.hidden = false; running = true;
   }
@@ -215,7 +218,16 @@ export function playScreen(app) {
   const vis = () => { if (document.hidden) pause(); };
   addEventListener('keydown', kd); addEventListener('keyup', ku); addEventListener('resize', resize); document.addEventListener('visibilitychange', vis);
 
-  resize(); reset(); showReady(); raf = requestAnimationFrame(frame);
+  async function load() {
+    if (song) return;
+    const rec = await getSong(sid), raw = rec && await getAudio(sid);
+    if (!rec || !raw) throw new Error('Música não encontrada na biblioteca.');
+    const buffer = await getCtx().decodeAudioData(raw.slice(0));
+    song = { id: rec.id, name: rec.name, artist: 'Sua música', bpm: rec.bpm, duration: rec.duration, charts: rec.charts, buffer };
+  }
+  ov.innerHTML = '<div class="card ovc"><h3>Carregando música…</h3><p class="muted">Preparando o palco</p></div>';
+  load().then(() => { if (!alive) return; beat = 60 / song.bpm; resize(); reset(); showReady(); raf = requestAnimationFrame(frame); })
+    .catch(e => { if (!alive) return; toast('Erro: ' + (e.message || e), 4000); go('jogar'); });
   return {
     cleanup() {
       alive = false; cancelAnimationFrame(raf); if (ctl) ctl.stop();

@@ -4,6 +4,7 @@ import { go, back } from './router.js';
 import { SONGS, DIFFS, durationSec } from './songs.js';
 import { session } from './gameplay.js';
 import { unlock } from './audio-engine.js';
+import { listSongs } from './db.js';
 
 let chosen = null;
 const fmt = s => Math.floor(s / 60) + ':' + String(Math.round(s % 60)).padStart(2, '0');
@@ -17,10 +18,18 @@ export function selectScreen(el) {
         <span class="muted">${s.artist} · ${s.bpm} BPM · ${fmt(durationSec(s))}</span>
         <span class="rec">${r ? '⭐'.repeat(r.stars) + ' ' + r.score.toLocaleString('pt-BR') + ' pts' : 'Sem recorde'}</span></div>
         <button class="btn" data-p="${s.id}" aria-label="Tocar ${s.name}">▶</button></div>`; }).join('')}
-      <p class="muted">Músicas de demonstração originais. Importar o seu MP3 chega na Etapa 3.</p></div>`;
+      <div id="lib"></div><p class="muted">Músicas de demonstração originais. Para usar a sua, vá em “Importar MP3”.</p></div>`;
     el.querySelector('#bk').onclick = back;
     el.querySelectorAll('[data-d]').forEach(b => b.onclick = () => { diff = chosen = b.dataset.d; draw(); });
-    el.querySelectorAll('[data-p]').forEach(b => b.onclick = () => { unlock().catch(() => {}); go(`play?s=${b.dataset.p}&d=${diff}`); });
+    const bind = root => root.querySelectorAll('[data-p]').forEach(b => b.onclick = () => { unlock().catch(() => {}); go(`play?s=${b.dataset.p}&d=${diff}`); });
+    bind(el);
+    listSongs().then(list => {
+      const box = el.querySelector('#lib'); if (!box || !list.length) return;
+      box.innerHTML = '<h3 style="margin:6px 0 10px">Minhas músicas</h3>' + list.map(s => { const r = st.records[s.id + ':' + diff]; return `<div class="card song"><div class="sn"><b>${s.name.replace(/[<>&]/g, '')}</b>
+        <span class="muted">Importada · ${s.bpm} BPM · ${fmt(s.duration)}</span><span class="rec">${r ? '⭐'.repeat(r.stars) + ' ' + r.score.toLocaleString('pt-BR') + ' pts' : 'Sem recorde'}</span></div>
+        <button class="btn" data-p="${s.id}" aria-label="Tocar">▶</button></div>`; }).join('');
+      bind(box);
+    }).catch(() => {});
   };
   draw();
 }
