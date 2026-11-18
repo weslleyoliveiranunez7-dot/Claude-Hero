@@ -1,0 +1,15 @@
+{
+  "name": "CLAUDE HERÓI",
+  "short_name": "CLAUDE HERÓI",
+  "description": "Jogo de ritmo de guitarra com importação de MP3",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#120a24",
+  "theme_color": "#120a24",
+  "icons": [
+    {"src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}
